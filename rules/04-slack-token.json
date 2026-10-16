@@ -1,0 +1,14 @@
+{
+  "id": "SECRET-SLACK-TOKEN",
+  "title": "发现 Slack 令牌前缀（xoxb- / xoxp- / xoxa- / xoxr- / xoxs- / xapp-）",
+  "severity": "high",
+  "source": "Slack Developer Docs · Tokens —— 「Bot token strings begin with xoxb-」「User token strings begin with xoxp-」「App-level token strings begin with xapp-」；旧版机器人/工作区令牌与刷新令牌为 xoxa- / xoxr- / xoxs- 前缀",
+  "advice": "这段字符串是 Slack 令牌。请到 Slack 应用的 Install App（或 OAuth & Permissions）页面点 Revoke 撤销，再重新安装获取新令牌，并把令牌改成从环境变量或密钥管理器读取。特别提醒：xoxb- 是机器人令牌，权限限于安装时申请的范围；xoxp- 代表**真实用户的完整权限**，一旦泄露等于把某个人在 Slack 里的身份交出去，尽量不要把用户令牌用在服务里。",
+  "check": {
+    "type": "file-pattern",
+    "pattern": "\\bx(?:ox[baprs]-|app-)(?=[0-9A-Za-z][-0-9A-Za-z]{19,})",
+    "flags": "g",
+    "wholeFile": true,
+    "max": 20
+  }
+}

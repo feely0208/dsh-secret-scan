@@ -1,0 +1,14 @@
+{
+  "id": "SECRET-GITHUB-TOKEN",
+  "title": "发现 GitHub 令牌前缀（ghp_ / gho_ / ghu_ / ghs_ / ghr_ / github_pat_）",
+  "severity": "high",
+  "source": "GitHub Changelog 2021-03-31《Authentication token format updates are generally available》与 GitHub Docs · GitHub credential types reference —— 令牌前缀 ghp_（经典个人访问令牌）、gho_（OAuth 令牌）、ghu_（用户到服务器令牌）、ghs_（服务器到服务器令牌）、ghr_（刷新令牌），细粒度个人访问令牌为 github_pat_",
+  "advice": "这类前缀的字符串是 GitHub 凭据。请立刻到 GitHub 的 Settings → Developer settings → Personal access tokens（或对应 App 的设置页）撤销该令牌，然后重新签发 —— 只从代码里删掉无效，历史提交里仍然有。ghp_ 代表你的全部账号权限，gho_/ghu_/ghs_/ghr_ 代表某个应用或 OAuth 流程的权限，github_pat_ 是细粒度令牌（权限较小但仍需撤销）。GitHub 会对推送中检测到的一部分有效令牌自动撤销，但不要依赖这个兜底。",
+  "check": {
+    "type": "file-pattern",
+    "pattern": "\\b(?:gh[pousr]_(?=[A-Za-z0-9]{36}(?![A-Za-z0-9]))|github_pat_(?=[A-Za-z0-9_]{20,}))",
+    "flags": "g",
+    "wholeFile": true,
+    "max": 20
+  }
+}

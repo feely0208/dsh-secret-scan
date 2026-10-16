@@ -1,0 +1,14 @@
+{
+  "id": "SECRET-PRIVATE-KEY",
+  "title": "发现 PEM 格式的私钥块（-----BEGIN ... PRIVATE KEY----- 且后面跟着密钥正文）",
+  "severity": "critical",
+  "source": "RFC 7468《Textual Encodings of PKIX, PKCS, and CMS Structures》§2 定义的 PEM 私钥标签（PRIVATE KEY / ENCRYPTED PRIVATE KEY / RSA PRIVATE KEY / EC PRIVATE KEY / DSA PRIVATE KEY）；OpenSSH PROTOCOL.key 定义 OPENSSH PRIVATE KEY；RFC 4880 §6.2 定义 PGP 装甲私钥块",
+  "advice": "私钥正文被写进了仓库。私钥和口令不一样：它没有「改密码」这一步，一旦泄露只能作废重签。请立即生成新密钥对，到所有使用它的地方替换（服务器 authorized_keys、部署平台、证书签发、加密数据的解密方），再用 git filter-repo 或 BFG 从历史里清除。**先换密钥、再清历史** —— 顺序反了等于没做。注意规则是有意收紧的：只出现一行格式说明、后面没有密钥正文的文档不会被报出来，能报出来说明后面跟着真的密钥体。",
+  "check": {
+    "type": "file-pattern",
+    "pattern": "-----BEGIN (?:RSA |EC |DSA |OPENSSH |ENCRYPTED |PGP )?PRIVATE KEY(?: BLOCK)?-----(?=[\\r\\n]+[A-Za-z0-9+/=\\r\\n]{64,})",
+    "flags": "g",
+    "wholeFile": true,
+    "max": 20
+  }
+}

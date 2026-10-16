@@ -1,16 +1,38 @@
 # @deepwhale-cn/dsh-secret-scan
 
-
-## 安装
-
-```bash
-dsh plugin --profile web add @deepwhale-cn/dsh-secret-scan
-```
 **密钥与敏感信息扫描** —— 给 [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) 用的 skill 插件。
 
 提交前、发布前、开源前，把不该出现在代码里的东西找出来。
 
 这是这一组技能里唯一**通用**的（不限中国大陆）—— 因为"密钥进了仓库"是所有技术团队都会踩的坑。
+
+## 它能扫出什么（7 条规则）
+
+技能负责「怎么处理」，规则引擎负责「有没有」。一条命令出证据：
+
+```bash
+dsh-secret-scan --root <项目路径>   # 扫一遍
+dsh-secret-scan --demo             # 看内置演示样本
+dsh-secret-scan --list-rules       # 列出规则与依据
+```
+
+| 规则 | 查什么 | 级别 |
+|---|---|---|
+| `SECRET-PRIVATE-KEY` | PEM 私钥块（标签 + 后面真跟着密钥正文）| 严重 |
+| `SECRET-AWS-AKID` | `AKIA` + 16 位 | 高 |
+| `SECRET-GITHUB-TOKEN` | `gh[pousr]_` / `github_pat_` | 高 |
+| `SECRET-SLACK-TOKEN` | `xox[baprs]-` / `xapp-` | 高 |
+| `SECRET-STRIPE-LIVE` | `sk_live_` / `rk_live_` | 高 |
+| `SECRET-CREDENTIAL-LITERAL` | 变量名含 secret/token/password + 高熵字面量 | 中 |
+| `SECRET-STRIPE-PUBLISHABLE` | `pk_live_` —— **Stripe 官方说可公开，故单列低级别** | 低 |
+
+**输出不落原值**：正则只消费前缀或变量名，密钥正文放在零宽断言里，
+所以报告里的证据是 `AKIA` / `ghp_` / `secretAccessKey` 这种，**不含密钥本身**。
+
+**只写标签不写正文不报**（文档里贴格式示意不误报）；`process.env.SECRET` 这类不报。
+
+**已知边界**：`.pem` / `.key` / `.p12` 文件本体不被引擎当文本读（core 的扩展名名单没收录），
+直接放 `server.pem` 会漏；同样私钥写成 `id_rsa` 或贴进代码/文档则能命中。报告会如实列出「跳过文件」。
 
 ## 它查什么
 

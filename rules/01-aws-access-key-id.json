@@ -1,0 +1,14 @@
+{
+  "id": "SECRET-AWS-AKID",
+  "title": "发现 AWS Access Key ID 格式的字符串（AKIA + 16 位大写字母数字）",
+  "severity": "high",
+  "source": "AWS IAM User Guide · Programmatic access with AWS security credentials —— 「Access key IDs beginning with AKIA are long-term access keys for an IAM user or an AWS account root user」；该页给出的长期访问密钥示例是 AKIA…EXAMPLE 形态的 20 位假值",
+  "advice": "这段字符串符合 AWS 长期访问密钥 ID 的形态（AKIA 开头、共 20 位）。请先确认它是真实密钥还是文档里的示例：若属实，立刻到 IAM 控制台停用并删除它、再创建新密钥 —— 访问密钥 ID 单独不能调用 API，但同一文件里往往还写着 secret access key，两者必须一起轮换。只删代码不够，历史提交里仍然查得到。若它就是 AWS 官方文档里那个 AKIA…EXAMPLE 假值，确认后可忽略。",
+  "check": {
+    "type": "file-pattern",
+    "pattern": "\\bAKIA(?=[0-9A-Z]{16}(?![0-9A-Z]))",
+    "flags": "g",
+    "wholeFile": true,
+    "max": 20
+  }
+}

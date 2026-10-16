@@ -1,0 +1,14 @@
+{
+  "id": "SECRET-STRIPE-PUBLISHABLE",
+  "title": "发现 Stripe 实时模式的发布密钥（pk_live_）",
+  "severity": "low",
+  "source": "Stripe Docs · API keys —— 密钥类型表：Publishable API key `pk_...` 的「Safe to expose」为 Yes，「It's safe to embed this key in your code or apps」；切到实时模式后发布密钥以 pk_live_ 开头",
+  "advice": "这条只标「低」，因为 Stripe 发布密钥（pk_live_）**设计上就是可以公开的**，放在前端代码里是官方认可的用法，不代表泄露。请你确认两件事就够：① 这确实是 pk_ 发布密钥，不是把 sk_live_ / rk_live_ 服务端密钥误贴到了前端代码里（服务端密钥由 SECRET-STRIPE-LIVE 负责）；② 这个发布密钥所对应的 Stripe 账号有没有配置访问策略或域名限制。服务端密钥请务必从环境变量读取。",
+  "check": {
+    "type": "file-pattern",
+    "pattern": "\\bpk_live_(?=[0-9A-Za-z]{16,})",
+    "flags": "g",
+    "wholeFile": true,
+    "max": 20
+  }
+}
