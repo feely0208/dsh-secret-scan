@@ -1,5 +1,7 @@
 # @deepwhale-cn/dsh-secret-scan
 
+[![dshfind 收录](https://dshfind.com/api/badge/feely0208/dsh-secret-scan?lang=zh)](https://dshfind.com/zh/plugins/feely0208/dsh-secret-scan)
+
 [![Listed on DSH Plugin Hub](https://dsh-plugin.org/badges/listed.svg)](https://dsh-plugin.org/zh/plugins/feely0208/dsh-secret-scan)
 
 **密钥与敏感信息扫描** —— 给 [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) 用的 skill 插件。
